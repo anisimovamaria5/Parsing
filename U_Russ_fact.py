@@ -18,7 +18,7 @@ class URussFact:
         self.class_gdh = GetSpch()
 
     def get_data(self, path):
-        os.makedirs('Южно-Русское', exist_ok=True)
+        os.makedirs('Name', exist_ok=True)
         folders = Path(path)
         file_list = list(folders.rglob('*.xlsx'))
 
@@ -182,7 +182,7 @@ class URussFact:
             res_month_potery_3 = pd.concat([res_month_potery_3,form_month_potery_3],ignore_index=True)
             res_month_potery_3 = res_month_potery_3.apply(lambda x: pd.to_numeric(x, errors='coerce') if x.dtype == 'str' else x)  
 
-        rab_excel = pd.ExcelWriter("Южно-Русское/ЮРусс.xlsx")
+        rab_excel = pd.ExcelWriter("Name_file_res.xlsx")
         res_year.to_excel(rab_excel, sheet_name='год', index=False)
         res_month.to_excel(rab_excel, sheet_name='месяц', index=False)
         res_month_sep.to_excel(rab_excel, sheet_name='сепараторы', index=False)
@@ -192,7 +192,7 @@ class URussFact:
         res_month_potery_3.to_excel(rab_excel, sheet_name='потери от теплообм. до УЗГ', index=False)
         rab_excel.save()
 
-        return res_year, res_month, res_month_sep, res_month_abs, 
+        return res_year, res_month, res_month_sep, res_month_abs
     
 
     def get_volume_rate(self, res_month):
@@ -375,7 +375,7 @@ class PlotBuilder:
         ax.set_ylim(0.5,3)#пределы по у
         ax.set_ylabel('Рвх, МПа', fontsize=12) #название оси у
         plt.legend(fontsize = 10,bbox_to_anchor=(0.65, 1.15), ncol=2) #легенда
-        plt.savefig('Южно-Русское/P_входа.jpg',bbox_inches="tight", dpi=200)
+        plt.savefig('P_входа.jpg',bbox_inches="tight", dpi=200)
 
 
     def get_p_out(self, res_year):
@@ -401,7 +401,7 @@ class PlotBuilder:
         ax.set_ylim(4.5,7)#пределы по у
         ax.set_ylabel('Рвых, МПа', fontsize=12) #название оси у
         plt.legend(fontsize = 10,bbox_to_anchor=(0.65, 1.15), ncol=2) #легенда
-        plt.savefig('Южно-Русское/P_выхода.jpg',bbox_inches="tight", dpi=200)
+        plt.savefig('P_выхода.jpg',bbox_inches="tight", dpi=200)
 
 
     def get_p_in_ppa(self, res_year):
@@ -430,7 +430,7 @@ class PlotBuilder:
         ax.set_ylim(0.5,3)#пределы по у
         ax.set_ylabel('Рвх в ППА, МПа', fontsize=12) #название оси у
         plt.legend(fontsize = 10,bbox_to_anchor=(0.65, 1.15), ncol=2) #легенда
-        plt.savefig('Южно-Русское/P_вх в ппа.jpg',bbox_inches="tight", dpi=200)  
+        plt.savefig('P_вх в ппа.jpg',bbox_inches="tight", dpi=200)  
 
 
     def get_p_in_ppa_with_q_rate(self, res_year):
@@ -462,7 +462,7 @@ class PlotBuilder:
         labels = [x1[0],x2[0],x3[0]] 
         leg = [l.get_label() for l in labels]
         ax.legend(labels, leg,bbox_to_anchor=(0.85, 1.15), ncol=3)
-        plt.savefig('Name.jpg',bbox_inches="tight", dpi=200)
+        plt.savefig('P_ppa.jpg',bbox_inches="tight", dpi=200)
 
 
     def get_ttr(self, res_year):
@@ -492,7 +492,7 @@ class PlotBuilder:
         ax.set_ylim(-30,-10)
         ax.set_ylabel('ТТР, \u00b0С', fontsize=12)
         plt.legend(fontsize = 10,bbox_to_anchor=(0.75, 1.15), ncol=3)
-        plt.savefig('Name.jpg',bbox_inches="tight", dpi=200)
+        plt.savefig('ТТР.jpg',bbox_inches="tight", dpi=200)
 
     def get_comp(self, res_year, name, title):
         res_year['Дата'] = pd.to_datetime(res_year['Дата'], dayfirst=True)
@@ -520,4 +520,5 @@ class PlotBuilder:
         plt.legend(fontsize = 10,bbox_to_anchor=(0.80, 1.15), ncol=3) #легенда
         plt.title(title, fontsize = 15,loc = 'left')
 
-        plt.savefig(f'Name/{name}.jpg',bbox_inches="tight", dpi=200)
+        plt.savefig(f'Степень сжатия/{name}.jpg',bbox_inches="tight", dpi=200)
+
