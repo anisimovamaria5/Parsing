@@ -308,11 +308,11 @@ class PlotBuilder:
         return plt
     
 
-class YamburgFact:
+class YFact:
     def __init__(self):
         self.plot_builder = PlotBuilder() 
         self.class_gdh = GetSpch()
-        self.sheet_names_dks = ['ДКС-1', 'ДКС-2', 'ДКС-3','ДКС-4','ДКС-5','ДКС-6','ДКС-7','ДКС-1В','ДКС-9']
+        self.sheet_names_dks = ['name']
     
 
     @classmethod
@@ -342,7 +342,6 @@ class YamburgFact:
     def share_df(self, df_new):
         last_index = df_new.index[-1]  # Индекс последней строки
         df_new = df_new.drop(last_index)
-        # df_new = df_new.dropna(how='all')
         df_new.columns = [['№ДКС', '№ агр.', 'Состояние', 'Pвх', 'Pвых', 'Tвх', 'Tвых', 'Девиа-', 'E', 'NaN', 'NaN', 'частота', 'T за твд', 'N,МВт', 'Q','Дата']]
         df_new = df_new.drop(['Девиа-','NaN', 'NaN','T за твд'], axis=1)
         df_new['№ агр.'] = df_new['№ агр.'].astype(str)
@@ -401,7 +400,7 @@ class YamburgFact:
     
 
     def get_res(self, path_data):
-        os.makedirs('Ямбург сеноман', exist_ok=True)
+        os.makedirs('Name_file', exist_ok=True)
         folders = Path(path_data)
         file_list = list(folders.glob('*.xlsx'))
         dict_df = {}
@@ -447,7 +446,7 @@ class YamburgFact:
     
 
     def get_month_data(self, list_res, path_mer):
-        rab_excel = pd.ExcelWriter("Ямбург сеноман/Ямбург_all.xlsx")
+        rab_excel = pd.ExcelWriter("Name_file.xlsx")
 
         dict_dks_all_month = {}
 
@@ -504,64 +503,29 @@ class YamburgFact:
         sheet_names = ['1 ступень', '2 ступень']
         
         for i, sheet_name_dks in zip(range(9), self.sheet_names_dks):
-            self.plot_builder.get_comp(list_res[i]).savefig(f'Ямбург сеноман/Степень сжатия {sheet_name_dks}.jpg',bbox_inches="tight", dpi=200)
+            self.plot_builder.get_comp(list_res[i]).savefig(f'Name_fileСтепень сжатия {sheet_name_dks}.jpg',bbox_inches="tight", dpi=200)
             for j, sheet_name in zip([1,2], sheet_names):
                 if not (i == 8 and j == 1): 
-                    self.plot_builder.get_p_in(list_res[i].loc[j]).savefig(f'Ямбург сеноман/P_входа {sheet_name} {sheet_name_dks}.jpg',bbox_inches="tight", dpi=200)
-                    self.plot_builder.get_plot_power(list_res[i].loc[j]).savefig(f'Ямбург сеноман/Мощность {sheet_name} {sheet_name_dks}.jpg',bbox_inches="tight", dpi=200)
+                    self.plot_builder.get_p_in(list_res[i].loc[j]).savefig(f'Name_file/P_входа {sheet_name} {sheet_name_dks}.jpg',bbox_inches="tight", dpi=200)
+                    self.plot_builder.get_plot_power(list_res[i].loc[j]).savefig(f'Name_file/Мощность {sheet_name} {sheet_name_dks}.jpg',bbox_inches="tight", dpi=200)
                 else:
                     pass
                 
         ##построение графиков:Рвых, мощность с расходом для ДКС-1В
         sheet_names = ['1 ступень', '2 ступень']
         for i, sheet_name in zip([1,2], sheet_names):
-            self.plot_builder.get_p_out(list_res[7].loc[i]).savefig(f'Ямбург сеноман/P_выхода {sheet_name} ДКС-1В.jpg',bbox_inches="tight", dpi=200)
-            self.plot_builder.get_power_1v(list_res[7].loc[i]).savefig(f'Ямбург сеноман/Мощность {sheet_name} ДКС-1В.jpg',bbox_inches="tight", dpi=200)
+            self.plot_builder.get_p_out(list_res[7].loc[i]).savefig(f'Name_file/P_выхода {sheet_name} ДКС-1В.jpg',bbox_inches="tight", dpi=200)
+            self.plot_builder.get_power_1v(list_res[7].loc[i]).savefig(f'Name_file/Мощность {sheet_name} ДКС-1В.jpg',bbox_inches="tight", dpi=200)
 
     def get_plot_gdh(self, dict_dks_all_month):
         doubled_sheet_name = [key for key in self.sheet_names_dks for _ in range(2)]
 
-        sheet_names_gdh = ['21-3,0(5200)(1,3,4,6,7)', '60-3,0(5200)(1,2,3,5,6)', 
-                    '21-3,0(5035)(2,5)','60-3,0(5200)(1,2,3,5,6)',
-                    '21-3,0(5200)(1,3,4,6,7)', '60-3,0(5200)(1,2,3,5,6)',
-                    '21-3,0(5200)(1,3,4,6,7)','76-2,2(4,7)',
-                    '21-3,0(5035)(2,5)','60-3,0(5200)(1,2,3,5,6)',
-                    '21-3,0(5200)(1,3,4,6,7)', '60-3,0(5200)(1,2,3,5,6)',
-                    '21-3,0(5200)(1,3,4,6,7)', '76-2,2(4,7)',
-                    '40-3,0(1в)',  '100-2,2(8300) (1в)', 
-                    '84-2,2(5300)(9)', '84-2,2(5300)(9)'
-                        ]
-        names_gdh = ['Газодинамическая характеристика компрессора СПЧ-16/21-3,0 ДКС-1 (nном = 5200 об/мин)', 
-                    'Газодинамическая характеристика компрессора СПЧ-16/60-3,0 ДКС-1 (nном = 5200 об/мин)', 
-
-                    'Газодинамическая характеристика компрессора СПЧ-16/21-3,0 ДКС-2 (nном = 5035 об/мин)',
-                    'Газодинамическая характеристика компрессора СПЧ-16/60-3,0 ДКС-2 (nном = 5200 об/мин)',
-
-                    'Газодинамическая характеристика компрессора СПЧ-16/21-3,0 ДКС-3 (nном = 5200 об/мин)', 
-                    'Газодинамическая характеристика компрессора СПЧ-16/60-3,0 ДКС-3 (nном = 5200 об/мин)', 
-                    
-                    'Газодинамическая характеристика компрессора СПЧ-16/21-3,0 ДКС-4 (nном = 5200 об/мин)', 
-                    'Газодинамические характеристики компрессора СПЧ-16/76-2,2 ДКС-4 (nном = 5200 об/мин)',
-
-                    'Газодинамическая характеристика компрессора СПЧ-16/21-3,0 ДКС-5 (nном = 5035 об/мин)',
-                    'Газодинамическая характеристика компрессора СПЧ-16/60-3,0 ДКС-5 (nном = 5200 об/мин)', 
-
-                    'Газодинамическая характеристика компрессора СПЧ-16/21-3,0 ДКС-6 (nном = 5200 об/мин)', 
-                    'Газодинамическая характеристика компрессора СПЧ-16/60-3,0 ДКС-6 (nном = 5200 об/мин)', 
-
-                    'Газодинамическая характеристика компрессора СПЧ-16/21-3,0 ДКС-7 (nном = 5200 об/мин)', 
-                    'Газодинамические характеристики компрессора СПЧ-16/76-2,2 ДКС-7 (nном = 5200 об/мин)',
-
-                    'Газодинамическая характеристика компрессора 7ГЦ2-573/7,2-40 \nДКС-1в (nном =  5300 об/мин)',
-                    'Газодинамические характеристики компрессора СПЧ-16/100-2,2 \n(ККМ) Ямбург ДКС-1в (nном =  8300 об/мин)',
-
-                    'Газодинамические характеристики компрессора СПЧ-16/84-2,2 ДКС-9 (nном = 5300 об/мин)',
-                    'Газодинамические характеристики компрессора СПЧ-16/84-2,2 ДКС-9 (nном = 5300 об/мин)',
-
-                    ]
+        sheet_names_gdh = ['name']
+        names_gdh = ['name']
 
         for sheet_name, sheet_name_gdh, name_gdh, j  in zip(doubled_sheet_name, sheet_names_gdh, names_gdh, range(len(doubled_sheet_name))):
             i = j % 2  
             dict_dks_all_month[sheet_name][i] = self.get_volume_rate(dict_dks_all_month[sheet_name][i])    
-            data = pd.read_excel('ГДХ Ямбург(сеноман).xlsx', sheet_name=sheet_name_gdh)  
-            self.class_gdh.scat_in_plot_gdh(dict_dks_all_month[sheet_name][i], data, name_gdh).savefig(f'Ямбург сеноман/ГДХ {sheet_name} {i+1} ступень.jpg',bbox_inches="tight", dpi=200) 
+            data = pd.read_excel('Name_file.xlsx', sheet_name=sheet_name_gdh)  
+            self.class_gdh.scat_in_plot_gdh(dict_dks_all_month[sheet_name][i], data, name_gdh).savefig(f'Name_file/ГДХ {sheet_name} {i+1} ступень.jpg',bbox_inches="tight", dpi=200) 
+
