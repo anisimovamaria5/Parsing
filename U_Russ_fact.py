@@ -21,16 +21,9 @@ class URussFact:
         os.makedirs('Южно-Русское', exist_ok=True)
         folders = Path(path)
         file_list = list(folders.rglob('*.xlsx'))
-        # res_year = pd.DataFrame([], columns=['Дата','Р_вх', 'Р_вых','Ст. сж. 1 ст','Ст. сж. 2 ст','Р_ППА','расход_ДКС','TTP'])
-        # res_month = pd.DataFrame([], columns=['Дата','расход_ДКС', 'Кол-во агр_1','N_ob_1','Р_вх_1', 'T_вх_1', 'Ст. сж. 1 ст','Р_вых_1','T_вых_1', 'P_вых_аво_1','Т_вых_аво_1','Кол-во агр_2', 'N_ob_2','Р_вх_2', 'T_вх_2', 'Ст. сж. 2 ст','Р_вых_2','T_вых_2', 'P_вых_аво_2','Т_вых_аво_2', 'T_теплооб'])
-        # res_month_sep = pd.DataFrame([], columns=['Дата', 'Р_вх_1', 'Р_вых_1', 'T_вх_1', 'T_вых_1', 'расход_ДКС', 'Кол-во агр', 'Объем отс. ВМС', 'T_вх_тепл', 'T_вых_тепл','Q_1сеп'])
-        # res_month_abs = pd.DataFrame([], columns=['Дата', 'расход_ДКС','Р_вх_1', 'T_вх_1', 'Кол-во агр', 'Q_1абс', 'Подача ТЭГ', 'Потери ТЭГ', 'TТР'])
-        # res_month_potery_1 = pd.DataFrame([], columns=['Дата', 'Р_вх_ппа','Р_вых_ппа', 'dР_ппа','Р_вых_sep','dР_sep', 'Р_вых_tepl', 'dР_tepl', 'Р_вх_1', 'dР_tepl-1st','Р_вых_1', 'Р_нагнет', 'dР_1st_нагн', 'Р_аво', 'dР_нагн_аво1', 'Р_вх_2', 'dР_аво1_2ст','Р_вых_2','dР_все_потери'])
-        # res_month_potery_2 = pd.DataFrame([], columns=['Дата', 'Р_вых_2', 'P_вых_аво_2', 'dР_avo_tepl', 'Р_вх_tepl','Р_вых_tepl','dР_tepl', 'dР_все_потери'])
-        # res_month_potery_3 = pd.DataFrame([], columns=['Дата','Р_вых_tepl', 'Р_вых_abs', 'dР_tepl_abs', 'Р_вых_uzg', 'dР_abs_uzg', 'dР_all_tepl_uzg', 'dР_all'])
 
         for files in file_list:
-            files_1 = files + '\\' + '_07_Технологический режим работы ДКС ЮРНГМ.xlsx'
+            files_1 = files + '\\' + 'Name_file_1.xlsx'
             Excel_1 = pd.read_excel(files_1)
             Excel_1.replace({0:np.nan}, inplace=True)
             Excel_1.replace({'РЕМ':np.nan}, inplace=True)
@@ -74,7 +67,7 @@ class URussFact:
             p_in_tepl = df_itog.iloc[114] * 0.0980665 + 0.0980665
             p_out_tepl_2 = df_itog.iloc[116] * 0.0980665 + 0.0980665
 
-            files_2 = files + '\\' + '_02_Суточный_отчет_о_добыче_газа_на_ЮРНГМ.xlsx'
+            files_2 = files + '\\' + 'Name_file_2.xlsx'
             Excel_2 = pd.read_excel(files_2)
             Excel_2.replace({0:np.nan}, inplace=True)
             bedin = Excel_2[Excel_2.iloc[:,0] == 'Дата'].index[0]
@@ -86,7 +79,7 @@ class URussFact:
             Ttr = df_new_2.iloc[:, 5] 
             p_out_uzg = df_itog_2.iloc[3] * 0.0980665 + 0.0980665
 
-            files_3 = files + '\\' + '_06_Технологический_режим_работы_ППА_КСГ_ЮРНГМ.xlsx'
+            files_3 = files + '\\' + 'Name_file_3.xlsx'
             Excel_3 = pd.read_excel(files_3)
             Excel_3.replace({0:np.nan}, inplace=True)
             Excel_3.replace({'РЕМ':np.nan}, inplace=True)
@@ -118,13 +111,13 @@ class URussFact:
             dp_tepl_2 = abs(p_in_tepl - p_out_tepl_2)
             dp_all_gpa_tepl = np.sum([dp_avo_2_tepl, dp_tepl_2])
 
-            files_4 = files + '\\' + '_12Сводка материального баланса потоков ВМС на ЮРНГМ.xlsx'
+            files_4 = files + '\\' + 'Name_file_4.xlsx'
             Excel_4 = pd.read_excel(files_4)
             end = Excel_4[Excel_4.iloc[:,0] == 'Всего\nза месяц'].index[0]
             df_itog_4 = Excel_4.iloc[end, :]
             BMC_kgs = df_itog_4.iloc[2]    
 
-            files_5 = files + '\\' + '_08_Технологический_режим_работы_КОГ-1,КОГ-2,ГТГ_ЮРНГМ.xlsx'
+            files_5 = files + '\\' + 'Name_file_5.xlsx'
             Excel_5 = pd.read_excel(files_5)
             Excel_5.replace({0:np.nan}, inplace=True)
             Excel_5.replace({'РЕМ':np.nan}, inplace=True)
@@ -145,7 +138,7 @@ class URussFact:
             dp_all_tepl_uzg = np.sum([dp_tepl_abs,dp_abs_uzg])
             dp_all = np.sum([dp_all_ppa_gpa,dp_all_gpa_tepl,dp_all_tepl_uzg])
 
-            files_6 = files + '\\' + '_10Сводка учета материального баланса триэтиленгликоля на ЮРНГМ.xlsx'
+            files_6 = files + '\\' + 'Name_file_6.xlsx'
             try:
                 Excel_6 = pd.read_excel(files_6)
                 end = Excel_6[Excel_6.iloc[:,0] == 'Итого\nза месяц'].index[0]
@@ -228,16 +221,14 @@ class URussFact:
     def get_plot_gdh(self, res_month):
         
         sheet_names = [
-            'СПЧ-16/40-2,5',
-            'СПЧ-16/76-2,2(01)'
+            "name"
         ]
         names = [
-            "Газодинамическая характеристика компрессора СПЧ-16/40-2,5 (nном = 5300 об/мин)",
-            "Газодинамическая характеристика компрессора СПЧ-16/76-2,2(01) (nном =  5300 об/мин)",
+            "name"
         ]
         for sheet_name, name in sheet_names, names:
             # res_month = 
-            data = pd.read_excel('ГДХ Ю-Русс.xlsx', sheet_name=sheet_name) 
+            data = pd.read_excel('Name_file.xlsx', sheet_name=sheet_name) 
             self.class_gdh.scat_in_plot_gdh(res_month, data, name)
 
 
@@ -471,7 +462,7 @@ class PlotBuilder:
         labels = [x1[0],x2[0],x3[0]] 
         leg = [l.get_label() for l in labels]
         ax.legend(labels, leg,bbox_to_anchor=(0.85, 1.15), ncol=3)
-        plt.savefig('Южно-Русское/P_вх в ппа с расходом.jpg',bbox_inches="tight", dpi=200)
+        plt.savefig('Name.jpg',bbox_inches="tight", dpi=200)
 
 
     def get_ttr(self, res_year):
@@ -501,7 +492,7 @@ class PlotBuilder:
         ax.set_ylim(-30,-10)
         ax.set_ylabel('ТТР, \u00b0С', fontsize=12)
         plt.legend(fontsize = 10,bbox_to_anchor=(0.75, 1.15), ncol=3)
-        plt.savefig('Южно-Русское/ТТР.jpg',bbox_inches="tight", dpi=200)
+        plt.savefig('Name.jpg',bbox_inches="tight", dpi=200)
 
     def get_comp(self, res_year, name, title):
         res_year['Дата'] = pd.to_datetime(res_year['Дата'], dayfirst=True)
@@ -528,4 +519,5 @@ class PlotBuilder:
         ax.set_ylabel('$\epsilon$', fontsize=12) #название оси у
         plt.legend(fontsize = 10,bbox_to_anchor=(0.80, 1.15), ncol=3) #легенда
         plt.title(title, fontsize = 15,loc = 'left')
-        plt.savefig(f'Южно-Русское/{name}.jpg',bbox_inches="tight", dpi=200)
+
+        plt.savefig(f'Name/{name}.jpg',bbox_inches="tight", dpi=200)
